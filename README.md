@@ -70,10 +70,4 @@ El proyecto se define en el archivo `docker-compose.yml` y consta de los siguien
 * phpMyAdmin: [http://localhost:8081](http://localhost:8081)
 
 ## Configuración adicional
-
-* Puedes modificar las variables de entorno en el archivo `docker-compose.yml` para personalizar la configuración de los servicios.
 * Los datos de WordPress y MySQL se almacenan en volúmenes persistentes, lo que significa que no se perderán al detener o eliminar los contenedores.
-
-## Contribución
-
-¡Las contribuciones son bienvenidas! Si encuentras algún problema o tienes alguna sugerencia, no dudes en abrir un issue o enviar un pull request.
