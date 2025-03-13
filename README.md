@@ -1,65 +1,79 @@
-# Despliegue de WordPress con Docker Compose
+# Práctica Docker: WordPress con MySQL y phpMyAdmin
 
-Este proyecto utiliza Docker Compose para desplegar una instancia de WordPress con MySQL y phpMyAdmin.
+Este repositorio contiene un ejemplo de configuración de Docker Compose para desplegar una aplicación WordPress junto con una base de datos MySQL y phpMyAdmin para la administración de la base de datos.
 
-## Estructura
+## Estructura del Proyecto
 
-El archivo `docker-compose.yml` define los siguientes servicios:
+El proyecto se define en el archivo `docker-compose.yml` y consta de los siguientes servicios:
 
-* **mysql:** Una instancia de MySQL para la base de datos de WordPress.
-* **wordpress:** La aplicación WordPress en sí.
-* **phpmyadmin:** Una interfaz web para administrar la base de datos MySQL.
+* **MySQL:**
+    * Imagen: `mysql:latest`
+    * Contenedor: `mysql`
+    * Puerto: `3306:3306`
+    * Volumen: `mysql_data:/var/lib/mysql`
+    * Red: `backend-network`
+    * Variables de entorno:
+        * `MYSQL_ROOT_PASSWORD`: `root`
+        * `MYSQL_DATABASE`: `bitnami_wordpress`
+        * `MYSQL_USER`: `bn_wordpress`
+        * `MYSQL_PASSWORD`: `bitnami`
+
+* **WordPress:**
+    * Imagen: `bitnami/wordpress:6.7.2-debian-12-r7`
+    * Contenedor: `wordpress`
+    * Puerto: `80:80`
+    * Volumen: `wordpress_data:/bitnami`
+    * Red: `frontend-network`
+    * Dependencia: `mysql`
+    * Variables de entorno:
+        * `WORDPRESS_DATABASE_HOST`: `mysql`
+        * `WORDPRESS_DATABASE_USER`: `bn_wordpress`
+        * `WORDPRESS_DATABASE_PASSWORD`: `bitnami`
+        * `WORDPRESS_DATABASE_NAME`: `bitnami_wordpress`
+        * `WORDPRESS_BLOG_NAME`: `User's blog`
+        * `WORDPRESS_USERNAME`: `user`
+        * `WORDPRESS_PASSWORD`: `bitnami`
+        * `WORDPRESS_EMAIL`: `miguel@despliegue.com`
+
+* **phpMyAdmin:**
+    * Imagen: `phpmyadmin/phpmyadmin`
+    * Contenedor: `phpmyadmin`
+    * Puerto: `8081:80`
+    * Redes: `frontend-network`, `backend-network`
+    * Dependencia: `mysql`
+    * Variables de entorno:
+        * `PMA_HOST`: `mysql`
+        * `MYSQL_ROOT_PASSWORD`: `root`
 
 ## Requisitos
 
-* Docker
-* Docker Compose
+* Docker y Docker Compose instalados.
 
-## Instalación
+## Cómo ejecutar
 
 1.  Clona este repositorio:
-
     ```bash
-    git clone [https://github.com/cran/DELTD](https://github.com/cran/DELTD)
-    cd [nombre del repositorio]
+    git clone [https://github.com/miguelcarnicerembid/practicaDocker.git](https://www.google.com/search?q=https://github.com/miguelcarnicerembid/practicaDocker.git)
     ```
-
-2.  Ejecuta Docker Compose para levantar los servicios:
-
+2.  Navega al directorio del proyecto:
+    ```bash
+    cd practicaDocker
+    ```
+3.  Ejecuta Docker Compose:
     ```bash
     docker-compose up -d
     ```
 
-## Configuración
+## Acceso a la aplicación
 
-* **MySQL:**
-    * La contraseña de root de MySQL es `root`.
-    * La base de datos se llama `bitnami_wordpress`.
-    * El usuario de la base de datos es `bn_wordpress` y la contraseña es `bitnami`.
-* **WordPress:**
-    * La base de datos de WordPress se conecta a `mysql`.
-    * El usuario administrador de WordPress es `user` y la contraseña es `bitnami`.
-    * El correo electrónico del administrador es `miguel@despliegue.com`.
-* **phpMyAdmin:**
-    * phpMyAdmin se conecta a `mysql`.
-    * La contraseña de root de MySQL es `root`.
+* WordPress: [http://localhost](http://localhost)
+* phpMyAdmin: [http://localhost:8081](http://localhost:8081)
 
-## Acceso
+## Configuración adicional
 
-* **WordPress:** Abre tu navegador y ve a `http://localhost`.
-* **phpMyAdmin:** Abre tu navegador y ve a `http://localhost:8081`.
+* Puedes modificar las variables de entorno en el archivo `docker-compose.yml` para personalizar la configuración de los servicios.
+* Los datos de WordPress y MySQL se almacenan en volúmenes persistentes, lo que significa que no se perderán al detener o eliminar los contenedores.
 
-## Redes
+## Contribución
 
-* **frontend-network:** Conecta WordPress y phpMyAdmin.
-* **backend-network:** Conecta WordPress y MySQL.
-
-## Volúmenes
-
-* **wordpress_data:** Persiste los datos de WordPress.
-* **mysql_data:** Persiste los datos de MySQL.
-
-## Notas
-
-* Este es un despliegue básico para desarrollo. En producción, considera usar contraseñas más seguras y configurar HTTPS.
-* Puedes modificar las variables de entorno en el archivo `docker-compose.yml` para personalizar la configuración.
+¡Las contribuciones son bienvenidas! Si encuentras algún problema o tienes alguna sugerencia, no dudes en abrir un issue o enviar un pull request.
