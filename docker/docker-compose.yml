@@ -1,0 +1,62 @@
+version:  "3.7"
+services:
+  mysql:
+    image:  mysql:latest
+    container_name:  mysql
+    restart:  always
+    environment:
+      MYSQL_ROOT_PASSWORD:  root
+      MYSQL_DATABASE:  bitnami_wordpress
+      MYSQL_USER:  bn_wordpress
+      MYSQL_PASSWORD:  bitnami
+    networks:
+        -  backend-network
+    ports:
+        -  "3306:3306"
+    volumes:
+        -  mysql_data:/var/lib/mysql
+  wordpress:
+    image:  bitnami/wordpress:6.7.2-debian-12-r7
+    container_name: wordpress
+    restart:  always
+    environment:
+      WORDPRESS_DATABASE_HOST:  mysql
+      WORDPRESS_DATABASE_USER:  bn_wordpress
+      WORDPRESS_DATABASE_PASSWORD:  bitnami
+      WORDPRESS_DATABASE_NAME:  bitnami_wordpress
+      WORDPRESS_BLOG_NAME:  "User's blog"
+      WORDPRESS_USERNAME:  user
+      WORDPRESS_PASSWORD:  bitnami
+      WORDPRESS_EMAIL:  miguel@despliegue.com
+    networks:
+        -  frontend-network
+    ports:
+        -  "80:80"
+    depends_on:
+        -  mysql
+    volumes:
+        -  wordpress_data:/bitnami
+  phpmyadmin:
+    image:  phpmyadmin/phpmyadmin
+    container_name:  phpmyadmin
+    restart:  always
+    environment:
+      PMA_HOST:  mysql
+      MYSQL_ROOT_PASSWORD:  root
+    networks:
+         -  backend-network
+         -  frontend-network
+    ports:
+        -  "8081:80"
+    depends_on:
+        -  mysql
+volumes:
+  wordpress_data:
+    driver:  local
+  mysql_data:
+    driver:  local
+networks:
+  frontend-network:
+    driver:  bridge
+  backend-network:
+    driver:  bridge
